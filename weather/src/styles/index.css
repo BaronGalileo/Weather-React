@@ -1,0 +1,19 @@
+body {
+
+  background: aqua;
+
+
+}
+
+.weather {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+}
+
+.countrys {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+}
+
