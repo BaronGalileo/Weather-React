@@ -3,6 +3,7 @@ import React from "react";
 
 function InformationTable(props) {
 
+
     function show(e) {
         let coll = document.getElementsByClassName("show");
         var content =coll[e.target.id].nextElementSibling;
@@ -23,7 +24,7 @@ function InformationTable(props) {
         let time = new Date(value.dt*1000)
         return (
             <>
-            <div className="conteyner">
+            <div>
                 <button className="show"  id={index} onClick={show}>Погода на {time.getDate(value.dt)} в {props.city[0].name}</button>
                 <div className="weather" id={index} key={index}>
                     <h3>Погода на {time.getDate(value.dt)} число в городе {props.city && props.city[0].name} </h3>

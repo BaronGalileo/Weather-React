@@ -17,3 +17,8 @@ body {
   overflow: hidden;
 }
 
+.flag-Country {
+  width: 90px;
+  height: 45px;
+}
+

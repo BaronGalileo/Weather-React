@@ -6,15 +6,14 @@ import React from "react";
 function Country(props) {
 
     function chench(value) {
-        props.chandgeCity(value)
+
+        props.chandgeCityFromCountry(value)
         
     }
 
 
 
     function showCantry(e) {
-
-
 
         let content = document.getElementsByClassName("countrys");
         if(content[0].style.display === "block") {
@@ -28,7 +27,9 @@ function Country(props) {
  }
 
  function choose(e) {
-    chench(props.countrys[e.target.nextElementSibling.id].capital[0])
+
+    chench(props.countrys[e.target.nextElementSibling.id])
+
     showCantry()
  }
 
@@ -39,7 +40,8 @@ function Country(props) {
 
     return(
         <>
-        <button onClick={showCantry}>Страны</button>
+        {props.countrys &&
+        <button onClick={showCantry}>Страны</button>}
         <div className="countrys">
         {props.countrys &&
             props.countrys.map((value, index) => {
@@ -49,6 +51,7 @@ function Country(props) {
 
                         <button onClick={choose}>Выбрать</button>
                         <p id={index}>{value.cca2} код страны -- Название: {value.name.official} Столица {value.capital}</p>
+                        <img className="flag-Country" src={value.flags.svg}alt="флаг страны" />
                     </div>
                     
                 )})}

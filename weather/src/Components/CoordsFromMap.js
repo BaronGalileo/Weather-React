@@ -1,4 +1,4 @@
-import React, {useState}from "react";
+import React, {useEffect, useState, useMemo}from "react";
 import { YMaps, Map } from '@pbe/react-yandex-maps';
 import axios from "axios";
 import InformationTable from "./InformationTable";
@@ -14,15 +14,71 @@ const collatore = new Intl.Collator()
 
 
 function CoordsFromMap() {
-    let [countrys, setCountrys] = useState();
-    let [city, setCity] = useState();
-    let [weather, setWeather] = useState()
+    const [countrys, setCountrys] = useState();
+    const [capital, setCapital] = useState()
+    const [city, setCity] = useState();
+    const [weather, setWeather] = useState()
+    const [zoom, setZoom] = useState(9);
+    const [center, setCenter] = useState([55.75, 37.57])
+
+
+
+
+    const mapState = useMemo(
+        () => ({center, zoom}),
+        [zoom, center]
+      );
+
+  
+
+    
+
+    useEffect(() => { 
+
+        flagSelection(city, countrys)
+        
+        return () => {
+
+
+        }
+    },)
+
 
 
     function chandgeCity(value) {
-        console.log("БУМЕРАНГ",value)
-        console.log("Бумеранг2", city)
-        return setCity(value)
+        setCity(value)
+        !countrys && getCoutrys(url_country)
+        debugger;
+
+        setCenter([value[0].lat, value[0].lon])
+
+       
+    }
+
+    function flagSelection() {
+        
+        countrys && countrys.map((country, index) => {
+            if (city[0].country === country.cca2) {
+                console.log("ФЛАГГГ!",country, index)
+                return setCapital(country)
+            }
+
+        })
+    }
+
+    function chandgeCityFromCountry(value) {
+        setCenter([value.capitalInfo.latlng[0], value.capitalInfo.latlng[1]])
+        setCapital(value)
+        let lat = value.capitalInfo.latlng[0]
+        let lon = value.capitalInfo.latlng[1]
+        return makeAWeatherForecast(lat, lon) 
+
+    }
+
+    function chandgeWeather(value) {
+
+        return setWeather(value)
+
     }
     
 
@@ -41,6 +97,7 @@ function CoordsFromMap() {
         })
         }
 
+
     function getCoutrys(path) {
         return axios.get(path).then(res => {
             let dict = res.data
@@ -52,17 +109,26 @@ function CoordsFromMap() {
 
 
 
+
+
     function clickOnMap(e) {
+
+        !countrys && getCoutrys(url_country)
         let x = e.get('coords')[0]
         let y = e.get('coords')[1]
+        makeAWeatherForecast(x, y)
+          
+    }
+
+    function makeAWeatherForecast(lat, lon) {
         let time = Math.round(new Date().getTime()/1000.0)
+        let x = lat
+        let y = lon
         const url_city = `http://api.openweathermap.org/geo/1.0/reverse?lat=${x}&lon=${y}&limit=5&appid=${API_KEY}`
         const url_weather = `https://api.openweathermap.org/data/3.0/onecall?lat=${x}&lon=${y}&dt=${time}&units=metric&appid=${API_KEY}`
-        getCity(url_city)
         getWeather(url_weather)
-        getCoutrys(url_country)
+        getCity(url_city)
 
-            
     }
 
     
@@ -73,10 +139,14 @@ function CoordsFromMap() {
     return(
         <YMaps>
         <div><b>Выбери город на корте!</b></div>
-        <Map onClick={clickOnMap} defaultState={{ center: [53.89, 27.535], zoom: 9 }} />
+        {capital &&
+        <div>Столица : {capital.capital[0]} страны: {capital.name.official} 
+            <img className="flag-Country" src={capital.flags.svg}alt="флаг страны" />
+        </div>}
+        <Map onClick={clickOnMap} state={mapState} defaultState={mapState} />
         <InformationTable city={city} weather={weather}/>
-        <Country countrys={countrys}  chandgeCity={chandgeCity}/>
-        <FormaInput city={city}/>
+        <Country countrys={countrys}  chandgeCityFromCountry={chandgeCityFromCountry}/>
+        <FormaInput API_KEY={API_KEY} city={city} chandgeWeather={chandgeWeather} chandgeCity={chandgeCity} />
         </YMaps>
 
     )
