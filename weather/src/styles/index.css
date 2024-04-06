@@ -1,8 +1,18 @@
 body {
 
-  background: aqua;
+  background-image: url("./img/screen-0.jpg"); 
+  color: azure;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 
 
+}
+
+.show {
+  background: rgb(231, 154, 10);
+  padding: 0px;
+  margin: 5px;
 }
 
 .weather {
@@ -17,8 +27,18 @@ body {
   overflow: hidden;
 }
 
+.capital {
+   background: red;
+   padding: 10px;
+   margin: 20px;
+}
+
 .flag-Country {
   width: 90px;
   height: 45px;
 }
+/* 
+.weekly-weather-forecast {
+
+} */
 

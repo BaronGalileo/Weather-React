@@ -6,6 +6,7 @@ import Country from "./Country";
 import FormaInput from "./FormaInput"
 
 
+
 const API_KEY = 'ed5b13e0fff6479e50160511418fb26e'
 const url_country = 'https://restcountries.com/v3.1/all'
 const collatore = new Intl.Collator()
@@ -16,55 +17,55 @@ const collatore = new Intl.Collator()
 function CoordsFromMap() {
     const [countrys, setCountrys] = useState();
     const [capital, setCapital] = useState()
-    const [city, setCity] = useState();
+    const [city, setCity] = useState([]);
     const [weather, setWeather] = useState()
-    const [zoom, setZoom] = useState(9);
+    const [zoom, setZoom] = useState(9)
+    const [isOff, setIsOff] = useState(false)
     const [center, setCenter] = useState([55.75, 37.57])
+    console.log("city", city)
+
+    useEffect(() => {
+
+        return () => {
+            
+        }
+    },[city, weather, center])
 
 
 
 
     const mapState = useMemo(
         () => ({center, zoom}),
-        [zoom, center]
+        [center, zoom]
       );
 
-  
 
-    
+      
 
-    useEffect(() => { 
-
-        flagSelection(city, countrys)
-        
+    useEffect(() => {
+        (() => {
+            if (countrys  && city.length) {
+                countrys.map(country => {
+                    if (city[0].country === country.cca2) {
+                    setCapital(country)
+                }
+            })}
+            else setCapital(null)
+        })();
+      
         return () => {
-
-
         }
-    },)
-
+    }, [city, countrys])
 
 
     function chandgeCity(value) {
         setCity(value)
         !countrys && getCoutrys(url_country)
-        debugger;
-
         setCenter([value[0].lat, value[0].lon])
-
-       
+      
     }
 
-    function flagSelection() {
-        
-        countrys && countrys.map((country, index) => {
-            if (city[0].country === country.cca2) {
-                console.log("ФЛАГГГ!",country, index)
-                return setCapital(country)
-            }
 
-        })
-    }
 
     function chandgeCityFromCountry(value) {
         setCenter([value.capitalInfo.latlng[0], value.capitalInfo.latlng[1]])
@@ -82,18 +83,18 @@ function CoordsFromMap() {
     }
     
 
-
-
-
     function getCity(path) {
         return axios.get(path).then(res =>{
-            setCity(res.data)
+            res.data[0] ? setCity(res.data) : setCity(null)
+                setCity(res.data)
+            
         })
         }
           
     function getWeather(path) {
         return axios.get(path).then(res =>{
             setWeather(res.data)
+
         })
         }
 
@@ -120,8 +121,20 @@ function CoordsFromMap() {
           
     }
 
+    function myCity(){
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                let lat = position.coords.latitude;
+                let lon = position.coords.longitude;
+                setCenter([lat, lon])
+                makeAWeatherForecast(lat, lon)
+            })
+        }
+    }
+
     function makeAWeatherForecast(lat, lon) {
         let time = Math.round(new Date().getTime()/1000.0)
+        !countrys && getCoutrys(url_country)
         let x = lat
         let y = lon
         const url_city = `http://api.openweathermap.org/geo/1.0/reverse?lat=${x}&lon=${y}&limit=5&appid=${API_KEY}`
@@ -140,11 +153,19 @@ function CoordsFromMap() {
         <YMaps>
         <div><b>Выбери город на корте!</b></div>
         {capital &&
-        <div>Столица : {capital.capital[0]} страны: {capital.name.official} 
+        <div className="capital">Столица : {capital.capital[0]} страны: {capital.name.official} 
             <img className="flag-Country" src={capital.flags.svg}alt="флаг страны" />
         </div>}
         <Map onClick={clickOnMap} state={mapState} defaultState={mapState} />
-        <InformationTable city={city} weather={weather}/>
+        <button onClick={myCity}>Погода дома!</button>
+        {city.length && weather &&
+        <div>
+        <div>Прогноз на сегодня в {city[0].name}</div>
+            <p>Температура воздуха <b>{weather.daily[0].temp.min} - {weather.daily[0].temp.max}°С</b> </p>
+            <p> Скорость ветра <b>{weather.daily[0].wind_speed}</b></p>
+        <button className="showBlock" onClick={() => setIsOff(!isOff)}>Прогноз в {city[0].name} на неделю</button>
+        </div>}
+        <InformationTable  isOff={isOff} city={city} weather={weather}/>
         <Country countrys={countrys}  chandgeCityFromCountry={chandgeCityFromCountry}/>
         <FormaInput API_KEY={API_KEY} city={city} chandgeWeather={chandgeWeather} chandgeCity={chandgeCity} />
         </YMaps>
