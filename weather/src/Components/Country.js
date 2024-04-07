@@ -37,29 +37,32 @@ function Country(props) {
 
 
 
-
     return(
         <>
         {props.countrys &&
-        <button onClick={showCantry}>Страны</button>}
-        <div className="countrys">
-        {props.countrys &&
-            props.countrys.map((value, index) => {
+        <div>
+            <div className="container">
+                <button  className="btn" onClick={showCantry}>Выбрать страну</button>
+            </div>
+            <div className="countrys">
+            {props.countrys &&
+                props.countrys.map((value, index) => {
 
-                return (
-                    <div className="country" key={index}>
-
-                        <button onClick={choose}>Выбрать</button>
-                        <p id={index}>{value.cca2} код страны -- Название: {value.name.official} Столица {value.capital}</p>
-                        <img className="flag-Country" src={value.flags.svg}alt="флаг страны" />
-                    </div>
+                    return (
+                    <div className="country"  key={index}>
+                            <div className="container" >
+                                <button className="btn" onClick={choose}>Выбрать</button>
+                                <p id={index}> Страна <b>{value.name.official}</b> Столица <b>{value.capital}</b></p>
+                            <img className="flag-Country" src={value.flags.svg}alt="флаг страны" />
+                            </div>
+                        </div>
                     
-                )})}
-        </div>
+                    )})}
+            </div>
+        </div>}
         </>
-    )
-
-}
+        )
+    }
 
 
 export default Country

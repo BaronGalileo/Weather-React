@@ -14,7 +14,7 @@ function DateTime() {
 
     return (
         <div>
-            <p>Сегодня : {date.toLocaleDateString()} Время : {date.toLocaleTimeString()}</p>
+            <p className="time">Сегодня : {date.toLocaleDateString()} Время : {date.toLocaleTimeString()}</p>
         </div>
     )
 }

@@ -20,19 +20,20 @@ function CoordsFromMap() {
     const [capital, setCapital] = useState()
     const [city, setCity] = useState([]);
     const [weather, setWeather] = useState()
-    const [icon, setIcon] = useState()
+    const [weatherDaily, setWeatherDaily] = useState()
     const [zoom, setZoom] = useState(9)
     const [isOff, setIsOff] = useState(false)
     const [center, setCenter] = useState([55.75, 37.57])
     console.log("температура",weather)
-
+    console.log("температураDaily",weatherDaily)
+    
 
     useEffect(() => {
 
         return () => {
             
         }
-    },[city, weather, center])
+    },[city, weather, center, isOff, weatherDaily])
 
 
 
@@ -41,9 +42,8 @@ function CoordsFromMap() {
         () => ({center, zoom}),
         [center, zoom]
       );
+    
 
-
-      
 
     useEffect(() => {
         (() => {
@@ -60,58 +60,52 @@ function CoordsFromMap() {
         }
     }, [city, countrys])
 
-    useEffect(() => {
-        (() => {
-            if(weather){
-            let icon_id = weather.daily[0].weather[0].id
+    const pathLogo = useMemo(
+    
+        () => pathLogoWeather(weatherDaily),
+        [weatherDaily]
+      );
+
+
+    function pathLogoWeather(weatherDaily) {
+        if(weatherDaily){
+            let icon_id = weatherDaily.weather[0].id
             if (icon_id >= 200 && icon_id <= 232) {
-                setIcon("./logo-weather/1.png")
-                debugger
+                return "./logo-weather/1.png"
+
             }
             else if (icon_id === 801 || icon_id ===802 ) {
-                debugger
-                setIcon("./logo-weather/7.png")
+                return "./logo-weather/7.png"
                 
             }
             else if (icon_id >= 500 && icon_id <= 504) {
-                debugger
-                setIcon("./logo-weather/3.png")
+                return "./logo-weather/3.png"
             }
             else if (icon_id >= 600 && icon_id <= 622 ) {
-                debugger
-                setIcon("./logo-weather/4.png")
+                return "./logo-weather/4.png"
             }
             else if (icon_id >= 600 && icon_id <= 622 ) {
-                debugger
-                setIcon("./logo-weather/4.png")
+                return "./logo-weather/4.png"
             }
             else if ((icon_id >= 600 && icon_id <= 622 ) || icon_id === 511) {
-                debugger
-                setIcon("./logo-weather/4.png")
+
+                return "./logo-weather/4.png"
             }
             else if (icon_id >= 701 && icon_id <= 781 ) {
-                debugger
-                setIcon("./logo-weather/5.png")
+
+                return "./logo-weather/5.png"
             }
             else if (icon_id === 800) {
-                debugger
-                setIcon("./logo-weather/6.png")
+
+                return "./logo-weather/6.png"
             }
             else if (icon_id === 803 || icon_id === 804 ) {
-                debugger
-                setIcon("./logo-weather/8.png")
+                return "./logo-weather/8.png"
             }
-            else {setIcon("./logo-weather/2.png")}
-            let x = new Map(weather)
-            console.log(weather.get(weather[0]))
-            debugger
-        }})();
+            else return "./logo-weather/2.png"
+    }}
 
-
-        return () => {
-            
-        }
-    },[weather])
+    
 
 
     function chandgeCity(value) {
@@ -124,16 +118,18 @@ function CoordsFromMap() {
 
 
     function chandgeCityFromCountry(value) {
+ 
+        if(value.capitalInfo.latlng){
         setCenter([value.capitalInfo.latlng[0], value.capitalInfo.latlng[1]])
-        setCapital(value)
         let lat = value.capitalInfo.latlng[0]
         let lon = value.capitalInfo.latlng[1]
-        return makeAWeatherForecast(lat, lon) 
-
+            return makeAWeatherForecast(lat, lon) 
+        }
+        else alert(`К сожалению у ${value.name.common} не удалось найти столицу!`)
     }
 
     function chandgeWeather(value) {
-
+        setWeatherDaily(value.daily[0])
         return setWeather(value)
 
     }
@@ -153,12 +149,13 @@ function CoordsFromMap() {
             if(date >= 0 && date < 6){setNowTime(res.data.daily[0].temp.night)}
                 else if(date >= 6 && date < 12){setNowTime(res.data.daily[0].temp.morn)}
                 else if(date >= 12 && date < 18){setNowTime(res.data.daily[0].temp.day)}
-                else {setNowTime(res.data.daily[0].temp.eve)}
-            
-
+                else {setNowTime(res.data.daily[0].temp.eve)}            
+            setWeatherDaily(res.data.daily[0])
             setWeather(res.data)
         })
         }
+
+
 
 
     function getCoutrys(path) {
@@ -214,8 +211,7 @@ function CoordsFromMap() {
     return(
 
         <YMaps>
-        <div><b>Выбери город на корте!</b>
-        </div>
+        <h2>Выберете город на карте или введите название</h2>
         {capital &&
         <div className="capital">Столица : {capital.capital[0]} страны: {capital.name.official} 
             <img className="flag-Country" src={capital.flags.svg}alt="флаг страны" />
@@ -230,15 +226,15 @@ function CoordsFromMap() {
                 <div>Сейчас в {city[0].name}</div>
                 <p>Температура воздуха <b>{nowTime}°С</b> </p>
                 <p> Скорость ветра <b>{weather.daily[0].wind_speed} м/с</b></p>
-                <p><img className="logo-weather" src={icon} alt="погода-лого"/><b>{weather.daily[0].weather[0].description}</b></p>
+                <p><img className="logo-weather" src={pathLogo} alt="погода-лого"/><b>{weather.daily[0].weather[0].description}</b></p>
                 <div className="container">
                     <button className="btn" onClick={() => setIsOff(!isOff)}>Прогноз в {city[0].name} на пять дней</button>
                 </div>
             </div>
         </div>}
-        <InformationTable  isOff={isOff} city={city} weather={weather}/>
-        <Country countrys={countrys}  chandgeCityFromCountry={chandgeCityFromCountry}/>
+        <InformationTable  isOff={isOff} city={city} weather={weather} pathLogoWeather={pathLogoWeather}/>
         <FormaInput API_KEY={API_KEY} city={city} chandgeWeather={chandgeWeather} chandgeCity={chandgeCity} />
+        <Country countrys={countrys}  chandgeCityFromCountry={chandgeCityFromCountry}/>
         </YMaps>
 
     )
