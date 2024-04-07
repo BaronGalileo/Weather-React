@@ -1,13 +1,24 @@
 body {
 
   background-image: url("./img/screen-0.jpg"); 
-  color: azure;
+  color: rgb(5, 5, 5);
   max-width: 90%;
   margin-left: auto;
   margin-right: auto;
-
+  box-shadow: 5px 5px 10px grey;
+  margin-inline: 5% 10%;
+  padding: 20px;
+  display: flex;
+  flex-direction:column;
 
 }
+
+img {
+  width: 75px;
+  height: 35px;
+}
+
+
 
 .show {
   background: rgb(231, 154, 10);
@@ -16,10 +27,12 @@ body {
 }
 
 .weather {
+
   padding: 0 18px;
   display: none;
   overflow: hidden;
 }
+
 
 .countrys {
   padding: 0 18px;
@@ -28,17 +41,80 @@ body {
 }
 
 .capital {
-   background: red;
-   padding: 10px;
-   margin: 20px;
+  background-image: url("./img/screen-0.jpg");
+  color:#f5f2f2;
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin: 10px;
 }
+
 
 .flag-Country {
-  width: 90px;
-  height: 45px;
+  width: 75px;
+  height: 35px;
 }
-/* 
-.weekly-weather-forecast {
 
-} */
+logo-weather {
+  width: 75px;
+  height: 60px;
+}
+
+
+.monitor {
+  border-radius: 120px 15px;
+  border: 5px solid rgb(93, 150, 236);
+  border-width: 5px 5px 25px 25px;
+  background-image: url("./img/fon.jpg");
+  padding-left: 75px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+
+
+.container {
+  display: flex;
+  
+}
+
+a {
+  font-size: 1.5rem;
+  padding: 1rem 3rem;
+  color: #f4f4f4;
+  text-transform: uppercase;
+}
+
+.btn {
+  border-radius: 70% 30% 15% 70%;
+  margin: 10px;
+  padding: 15px;
+  text-decoration: none;
+  border: 1px solid rgb(146, 148, 248);
+  overflow: hidden;
+}
+
+.btn:hover {
+  box-shadow: 1px 1px 25px 10px rgba(146, 148, 248, 0.4);
+}
+
+.btn:before {
+  content: "";
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(146, 148, 248, 0.4),
+    transparent
+  );
+  transition: all 650ms;
+}
+
+.btn:hover:before {
+  left: 100%;
+}
+
 
