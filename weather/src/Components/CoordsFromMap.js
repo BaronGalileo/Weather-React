@@ -24,8 +24,7 @@ function CoordsFromMap() {
     const [zoom, setZoom] = useState(9)
     const [isOff, setIsOff] = useState(false)
     const [center, setCenter] = useState([55.75, 37.57])
-    console.log("температура",weather)
-    console.log("температураDaily",weatherDaily)
+
     
 
     useEffect(() => {

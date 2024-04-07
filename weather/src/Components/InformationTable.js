@@ -6,7 +6,6 @@ function InformationTable(props) {
 
     function show(e) {
         let content =e.target.nextElementSibling;
-        console.log("content",content)
         if(content.style.display === "block") {
             content.style.display = "none"
 
